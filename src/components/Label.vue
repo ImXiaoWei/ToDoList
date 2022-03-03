@@ -3,7 +3,6 @@
 		<el-row type="flex" align="middle">
 			<!-- 左侧图标 -->
 			<el-col :span="3">
-				<!-- <div class="start-icon"><i class="el-icon-circle-check"></i></div> -->
 				<slot name="start-icon"></slot>
 			</el-col>
 			<!-- 中部内容 -->

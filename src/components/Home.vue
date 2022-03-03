@@ -4,9 +4,17 @@
 			<el-col>
 				<!-- 卡片 -->
 				<el-card class="box-card">
-					<div class="title"><span class="el-icon-date"> To-Do List </span></div>
+					<div class="title"><span class="el-icon-date"> 待 办 事 项 </span></div>
 					<!-- 待办事项 -->
 					<div class="todo">
+						<!-- 无数据时提示 -->
+						<div v-show="todoList.length==0">
+							<el-result icon="success" title="已完成全部事项">
+								<template slot="extra">
+									<el-button>新建事项</el-button>
+								</template>
+							</el-result>
+						</div>
 						<Lable :class="todoListStyle(item.state)" v-for="(item,index) in todoList" :key="index"
 							:activeStyle="todoStyle">
 							<template slot="top-text">
@@ -16,15 +24,18 @@
 								{{item.date}}
 							</template>
 							<template slot="start-icon">
-								<div class="todo-icon"><i class="el-icon-full-screen"></i></div>
+								<div class="todo-icon">
+									<i class="el-icon-full-screen" @click="finished();item.done=true"></i>
+								</div>
 							</template>
 						</Lable>
 					</div>
 					<!-- 完成事项 -->
 					<div class="done" v-show="doneCount>0">
-						<hr>
 						<div class="complete">
-							Complete <el-tag type="success" size="small">{{doneCount}}</el-tag>
+							<el-divider content-position="left"><span id="completeFont"> 已完成 </span>
+								<el-tag type="success" size="medium">{{doneCount}}</el-tag>
+							</el-divider>
 						</div>
 						<Lable class="doneListStyle" v-for="(item,index) in doneList" :key="index"
 							:activeStyle="doneStyle">
@@ -110,6 +121,14 @@
 					default:
 						return 'stateDefault'
 				}
+			},
+			/* 完成目标 */
+			finished() {
+				this.$message({
+					message: '完成~',
+					type: 'success',
+					duration: 700
+				});
 			}
 		},
 		computed: {
@@ -137,20 +156,21 @@
 	}
 
 	.complete {
-		font-size: 20px;
-	}
-
-	hr {
 		margin: 30px 0 20px 0;
-		height: 3px;
+		height: 2px;
 		background-color: #ccc;
 		border: none;
+	}
+
+	#completeFont {
+		font-size: 20px;
+		font-weight: 400;
+		color: #67C23A;
 	}
 
 	.todo-icon {
 		font-size: 25px;
 		margin-left: 8px;
-		color: #67C23A;
 	}
 
 	.done-icon {
@@ -158,11 +178,6 @@
 		margin-left: 8px;
 		color: #67C23A;
 	}
-
-	/* .todoList {
-		border: 1px dashed #67C23A;
-		background-color: #F0F9EB
-	} */
 
 	.doneListStyle {
 		border: 1px dashed #67C23A;
