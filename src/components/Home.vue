@@ -10,10 +10,10 @@
 						<!-- 无数据时提示 -->
 						<div v-show="todoList.length==0">
 							<el-result icon="success" title="已完成全部事项">
-								<template slot="extra">
-									<el-button>新建事项</el-button>
-								</template>
 							</el-result>
+						</div>
+						<div class="addTodo">
+							<el-button @click="addTodo()">新建事项</el-button>
 						</div>
 						<Lable :class="todoListStyle(item.state)" v-for="(item,index) in todoList" :key="index"
 							:activeStyle="todoStyle">
@@ -53,6 +53,28 @@
 				</el-card>
 			</el-col>
 		</el-row>
+
+		<!-- 新建事项弹出界面 -->
+		<el-drawer title="新建事项" :visible.sync="drawer" direction="btt" size="350px">
+			<div style="margin: 10px;">
+				<el-input placeholder="请输入内容" v-model="form.addTitle">
+					<template slot="prepend">事项内容</template>
+				</el-input>
+				<br><br>
+				<el-date-picker type="date" placeholder="截止日期" v-model="form.addDate"
+					style="width: 40%;margin-right: 20px;">
+				</el-date-picker>
+				<el-time-picker arrow-control placeholder="截止时间" v-model="form.addTime" style="width: 40%;">
+				</el-time-picker>
+				<br><br>
+				<el-select v-model="form.addState" placeholder="四象限">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+					</el-option>
+				</el-select>
+				<br><br>
+				<el-button type="success" style="width: 100%;">立即新建</el-button>
+			</div>
+		</el-drawer>
 	</div>
 </template>
 
@@ -98,8 +120,27 @@
 					done: true
 				}],
 				doneStyle: "",
-				todoStyle: "border:1px dashed orangered"
-
+				todoStyle: "border:1px dashed orangered",
+				drawer: false,
+				form: {
+					addTitle: "",
+					addDate: "",
+					addTime: "",
+					addState: "",
+				},
+				options: [{
+					value: 0,
+					label: '重要不紧急'
+				}, {
+					value: 1,
+					label: '重要紧急'
+				}, {
+					value: 2,
+					label: '不重要不紧急'
+				}, {
+					value: 3,
+					label: '不重要紧急'
+				}]
 			}
 		},
 		methods: {
@@ -129,6 +170,10 @@
 					type: 'success',
 					duration: 700
 				});
+			},
+			/* 新建事项 */
+			addTodo() {
+				this.drawer = true
 			}
 		},
 		computed: {
@@ -211,5 +256,10 @@
 
 	.stateDefault {
 		border: 1px dashed #ccc;
+	}
+
+	.addTodo {
+		text-align: center;
+		margin-bottom: 40px;
 	}
 </style>
