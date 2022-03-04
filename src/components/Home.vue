@@ -13,7 +13,7 @@
 							</el-result>
 						</div>
 						<div class="addTodo">
-							<el-button @click="addTodo()">新建事项</el-button>
+							<el-button @click="openAddTodo()">新建事项</el-button>
 						</div>
 						<Lable :class="todoListStyle(item.state)" v-for="(item,index) in todoList" :key="index"
 							:activeStyle="todoStyle">
@@ -30,6 +30,7 @@
 							</template>
 						</Lable>
 					</div>
+
 					<!-- 完成事项 -->
 					<div class="done" v-show="doneCount>0">
 						<div class="complete">
@@ -55,24 +56,22 @@
 		</el-row>
 
 		<!-- 新建事项弹出界面 -->
-		<el-drawer title="新建事项" :visible.sync="drawer" direction="btt" size="350px">
-			<div style="margin: 10px;">
+		<el-drawer title="新建事项" :visible.sync="drawer" direction="btt" size="400px">
+			<div class="addTodoWindow">
 				<el-input placeholder="请输入内容" v-model="form.addTitle">
 					<template slot="prepend">事项内容</template>
 				</el-input>
 				<br><br>
-				<el-date-picker type="date" placeholder="截止日期" v-model="form.addDate"
-					style="width: 40%;margin-right: 20px;">
+				<el-date-picker id="addDate" value-format="yyyy-MM-dd HH:mm" v-model="form.addDate" type="datetime"
+					placeholder="选择日期时间">
 				</el-date-picker>
-				<el-time-picker arrow-control placeholder="截止时间" v-model="form.addTime" style="width: 40%;">
-				</el-time-picker>
 				<br><br>
-				<el-select v-model="form.addState" placeholder="四象限">
+				<el-select v-model="form.addState" placeholder="设置状态">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
 				<br><br>
-				<el-button type="success" style="width: 100%;">立即新建</el-button>
+				<el-button class="addBtn" type="success" @click="addBtn()">立即新建</el-button>
 			</div>
 		</el-drawer>
 	</div>
@@ -125,7 +124,6 @@
 				form: {
 					addTitle: "",
 					addDate: "",
-					addTime: "",
 					addState: "",
 				},
 				options: [{
@@ -171,9 +169,20 @@
 					duration: 700
 				});
 			},
-			/* 新建事项 */
-			addTodo() {
+			/* 打开新建事项窗口 */
+			openAddTodo() {
 				this.drawer = true
+			},
+			/* 新建事项 */
+			addBtn() {
+				let obj = {
+					title: this.form.addTitle,
+					date: this.form.addDate,
+					state: this.form.addState,
+					done: false
+				}
+				this.totalList.push(obj)
+				this.drawer = false
 			}
 		},
 		computed: {
@@ -194,6 +203,11 @@
 </script>
 
 <style>
+	.box-card {
+		margin: 0px auto;
+		max-width: 500px
+	}
+
 	.title {
 		font-size: 25px;
 		text-align: center;
@@ -213,6 +227,12 @@
 		color: #67C23A;
 	}
 
+	.addTodo {
+		text-align: center;
+		margin-bottom: 40px;
+	}
+
+	/* 列表单元样式 */
 	.todo-icon {
 		font-size: 25px;
 		margin-left: 8px;
@@ -258,8 +278,12 @@
 		border: 1px dashed #ccc;
 	}
 
-	.addTodo {
-		text-align: center;
-		margin-bottom: 40px;
+	/* 新建事项窗口 */
+	.addTodoWindow {
+		margin: 10px;
+	}
+
+	.addBtn {
+		width: 100%;
 	}
 </style>
